@@ -1,0 +1,204 @@
+# 排序(SORT)
+输入: <a1,a2,a3,a4,...an>。
+
+输出: 输入序列的一个排序, <a1',a2',a3',a4',...,an'> 满足 a1' <=  a2' <=  a3' <= a4'... <= an'
+
+被排序数也被称为关键词
+
+抽象排序 类
+
+```java
+public abstract class Sort {
+
+    public Sort() {
+    }
+
+    /**
+     * 开始时间
+     */
+    long startTime = 0L;
+
+    /**
+     * 结束时间
+     */
+    long endTime = 0L;
+
+    /**
+     * 步数
+     */
+    long steps = 0L;
+
+    int[] result;
+
+    public long getUsageTime() {
+        return endTime - startTime;
+    }
+
+
+    public long getSteps() {
+        return steps;
+    }
+
+    /**
+     * 打印结果
+     */
+    public void print() {
+        System.out.printf("Used time: %sms%n", getUsageTime()); // 用时
+        System.out.printf("Steps: %s%n", getSteps()); // 执行步数
+        System.out.println(Arrays.toString(result)); // 排序结果
+    }
+
+
+    /**
+     * 排序方法
+     *
+     * @param nums 待排序数组
+     * @return 排序后的数组
+     */
+    protected abstract int[] sort(int[] nums);
+
+    /**
+     * 排序
+     *
+     * @param isNature 是否是从小到大
+     * @param nums     待排序数组
+     * @return 排序后的数组
+     */
+    public int[] sort(boolean isNature, int... nums) {
+        if (isNature) return sort(nums);
+        else return unNatureSort(nums);
+    }
+
+    protected abstract int[] unNatureSort(int[] nums);
+
+
+
+
+    public static <T> T[] reverse(T... nums) {
+        if (nums == null) {
+            return null;
+        }
+        final int len = nums.length;
+        @SuppressWarnings("unchecked")
+        T[] ts = (T[]) Array.newInstance(nums[0].getClass(), len);
+        for (int i = 0; i < len; i++) {
+            ts[i] = nums[len - i - 1];
+        }
+        return ts;
+    }
+
+}
+
+```
+
+
+
+### 1. 插入排序
+
+伪代码:
+
+INSERTION-SORT(A)
+
+```pseudocode
+for j = 2 to A.length
+	key = A[j]
+	// insert A[j] into the sorted sequence A[1...j-1]
+	i = j - 1
+	while i > 0 and A[i] > key
+		A[i + 1] = A[i]
+		i--
+    A[i + 1] = key
+```
+
+
+
+`java`实现
+
+```java
+public class InsertionSort extends Sort {
+
+    @Override
+    public int[] sort(int... nums) {
+        steps = 0;
+        startTime = System.currentTimeMillis();
+        if (nums == null) {
+            result = null;
+        } else if (nums.length <= 1) {
+            result = Arrays.copyOf(nums, nums.length);
+        } else {
+            result = Arrays.copyOf(nums, nums.length);
+            int len = result.length;
+            // 开始排序
+            for (int j = 1; j < len; j++) {
+                steps++;
+                int num = result[j];
+                int i = j - 1;
+                // 非自然排序
+                // 改为 result[i] < num
+                for (; i >= 0 && result[i] > num; i--) {
+                    result[i + 1] = result[i];
+                }
+                result[i + 1] = num;
+            }
+        }
+        endTime = System.currentTimeMillis();
+        return result;
+    }
+
+}
+```                                       
+
+
+### 2. 选择排序
+
+伪代码
+
+SELECTION-SORT(A)
+
+```pseudocode
+for j = 1 to A.length - 1
+	index = j
+	for i = j  + 1 to A.length
+		if A[index] < A[i]
+			index = i 
+        // 交换 A[j], A[index] 值
+        swap(A[j],A[index])
+```
+
+`java`实现
+
+```java
+public class SelectionSort extends Sort{
+    @Override
+    public int[] sort(int[] nums) {
+        steps = 0;
+        startTime = System.currentTimeMillis();
+        if (nums == null) {
+            result = null;
+        } else if (nums.length <= 1) {
+            result = Arrays.copyOf(nums, nums.length);
+        } else {
+            result = Arrays.copyOf(nums, nums.length);
+            int len = result.length;
+            // 开始排序
+            for (int j = 0; j < len - 1; j++) {
+                int index = j;
+                for (int i = j + 1; i < len; i++) {
+                    // 选择排序将
+                    if (result[index] > result[i]) {
+                        index = i;
+                    }
+                }
+                if (index != j) {
+                    int temp = result[index];
+                    result[index] = result[j];
+                    result[j] = temp;
+                }
+            }
+        }
+        endTime = System.currentTimeMillis();
+        return result;
+    }
+}
+```
+
