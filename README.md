@@ -1,3 +1,4 @@
-# MyNote
-Java学习笔记
+# Learning Note
+学习笔记
 
+ 
